@@ -1,97 +1,91 @@
-// GitHub API configuration
 const GITHUB_OWNER = 'yyyumeniku';
 const GITHUB_REPO = 'HyPrism';
 
-// Fetch release info and download counts from GitHub API
-async function fetchReleaseInfo() {
-    try {
-        const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases`);
-        
-        if (!response.ok) {
-            throw new Error('Failed to fetch releases');
-        }
-        
-        const releases = await response.json();
-        
-        if (releases.length === 0) {
-            updateUIWithError();
-            return;
-        }
-        
-        // Find latest stable release (not pre-release)
-        const latestRelease = releases.find(r => !r.prerelease) || releases[0];
-        
-        // Calculate total downloads across all releases
-        let totalDownloads = 0;
-        releases.forEach(release => {
-            release.assets.forEach(asset => {
-                totalDownloads += asset.download_count;
-            });
-        });
-        
-        // Update download count
-        document.getElementById('total-downloads').textContent = formatNumber(totalDownloads);
-        
-        // Update version info
-        document.getElementById('version-info').textContent = `Latest: ${latestRelease.tag_name}`;
-        
-        // Find download URLs for each platform
-        const assets = latestRelease.assets;
-        
-        // Windows (.exe)
-        const windowsAsset = assets.find(a => a.name.endsWith('.exe'));
-        if (windowsAsset) {
-            document.getElementById('download-windows').href = windowsAsset.browser_download_url;
-        } else {
-            document.getElementById('download-windows').style.opacity = '0.5';
-            document.getElementById('download-windows').title = 'Not available';
-        }
-        
-        // macOS (.dmg)
-        const macosAsset = assets.find(a => a.name.endsWith('.dmg'));
-        if (macosAsset) {
-            document.getElementById('download-macos').href = macosAsset.browser_download_url;
-        } else {
-            document.getElementById('download-macos').style.opacity = '0.5';
-            document.getElementById('download-macos').title = 'Not available';
-        }
-        
-        // Linux (.AppImage preferred, fallback to .flatpak)
-        const linuxAsset = assets.find(a => a.name.endsWith('.AppImage')) || 
-                          assets.find(a => a.name.endsWith('.flatpak'));
-        if (linuxAsset) {
-            document.getElementById('download-linux').href = linuxAsset.browser_download_url;
-        } else {
-            document.getElementById('download-linux').style.opacity = '0.5';
-            document.getElementById('download-linux').title = 'Not available';
-        }
-        
-    } catch (error) {
-        console.error('Error fetching release info:', error);
-        updateUIWithError();
-    }
+// Truncate long names
+function truncateName(name, maxLen = 10) {
+    return name.length > maxLen ? name.slice(0, maxLen) + '...' : name;
 }
 
-function updateUIWithError() {
-    document.getElementById('total-downloads').textContent = '—';
-    document.getElementById('version-info').textContent = 'Could not load version info';
-    
-    // Set fallback URLs to releases page
-    const fallbackUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases`;
-    document.getElementById('download-windows').href = fallbackUrl;
-    document.getElementById('download-macos').href = fallbackUrl;
-    document.getElementById('download-linux').href = fallbackUrl;
-}
-
+// Format number with K/M suffix
 function formatNumber(num) {
-    if (num >= 1000000) {
-        return (num / 1000000).toFixed(1) + 'M';
-    }
-    if (num >= 1000) {
-        return (num / 1000).toFixed(1) + 'K';
-    }
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
     return num.toLocaleString();
 }
 
-// Initialize
-document.addEventListener('DOMContentLoaded', fetchReleaseInfo);
+// Fetch and display contributors
+async function fetchContributors() {
+    const container = document.getElementById('contributors');
+    
+    try {
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contributors`);
+        
+        if (!response.ok) throw new Error('Failed to fetch');
+        
+        const contributors = await response.json();
+        
+        container.innerHTML = contributors.map(c => `
+            <a href="${c.html_url}" target="_blank" rel="noopener" class="contributor" title="${c.login} - ${c.contributions} contributions">
+                <img src="${c.avatar_url}" alt="${c.login}" loading="lazy">
+                <span>${truncateName(c.login)}</span>
+            </a>
+        `).join('');
+        
+    } catch (error) {
+        container.innerHTML = '<div class="loading">Could not load contributors</div>';
+    }
+}
+
+// Fetch download count
+async function fetchDownloadCount() {
+    try {
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases`);
+        if (!response.ok) throw new Error('Failed to fetch');
+        
+        const releases = await response.json();
+        let total = 0;
+        releases.forEach(r => r.assets.forEach(a => total += a.download_count));
+        
+        document.getElementById('total-downloads').textContent = formatNumber(total);
+    } catch (error) {
+        document.getElementById('total-downloads').textContent = '—';
+    }
+}
+
+// Fetch download URLs
+async function fetchDownloads() {
+    try {
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`);
+        
+        if (!response.ok) throw new Error('Failed to fetch');
+        
+        const release = await response.json();
+        const assets = release.assets;
+        
+        // Windows
+        const win = assets.find(a => a.name.endsWith('.exe'));
+        if (win) document.getElementById('download-windows').href = win.browser_download_url;
+        
+        // macOS
+        const mac = assets.find(a => a.name.endsWith('.dmg'));
+        if (mac) document.getElementById('download-macos').href = mac.browser_download_url;
+        
+        // Linux
+        const linux = assets.find(a => a.name.endsWith('.AppImage') || a.name.endsWith('.flatpak'));
+        if (linux) document.getElementById('download-linux').href = linux.browser_download_url;
+        
+    } catch (error) {
+        // Fallback to releases page
+        const fallback = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases`;
+        document.getElementById('download-windows').href = fallback;
+        document.getElementById('download-macos').href = fallback;
+        document.getElementById('download-linux').href = fallback;
+    }
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    fetchContributors();
+    fetchDownloads();
+    fetchDownloadCount();
+});
