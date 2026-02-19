@@ -78,6 +78,8 @@ a { text-decoration: none; color: inherit; }
     max-width: 1140px;
     margin: 0 auto;
     padding: 0 1.5rem;
+    content-visibility: auto; /* skip rendering offscreen containers */
+    contain-intrinsic-size: 500px;
 }
 
 .text-accent { color: var(--accent); }
@@ -112,8 +114,8 @@ a { text-decoration: none; color: inherit; }
     height: 300px;
     display: grid;
     /* dynamic grid size via js or media queries would be better, but fixed is fine if optimized */
-    grid-template-rows: repeat(var(--grid-size, 24), 1fr);
-    grid-template-columns: repeat(var(--grid-size, 24), 1fr);
+    grid-template-rows: repeat(var(--grid-size, 20), 1fr);
+    grid-template-columns: repeat(var(--grid-size, 20), 1fr);
     gap: 1px;
     position: absolute;
     left: 50%;
@@ -124,12 +126,11 @@ a { text-decoration: none; color: inherit; }
         rotateY(0deg)
         rotateZ(20deg)
         scale(6);
-    transform-style: preserve-3d;
+    transform-style: flat; /* preserve-3d is expensive, flat is faster */
     will-change: transform;
     /* strict containment for performance */
     contain: strict;
-    /* slight blur for aesthetic */
-    filter: blur(0.5px);
+    filter: blur(0.1px);
 }
 
 .grid-animation::after {
@@ -339,11 +340,13 @@ a { text-decoration: none; color: inherit; }
 }
 
 .hero__subtitle {
-    font-size: 1rem;
-    color: var(--muted);
-    max-width: 520px;
+    font-size: 1.15rem;
+    color: #edf0f5; /* brighter text */
+    max-width: 600px; /* wider text block */
     margin: 0 auto 2.5rem;
-    line-height: 1.7;
+    line-height: 1.6;
+    font-weight: 600; /* significantly bolder */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6); /* drop shadow for readability */
 }
 
 .hero__actions {
@@ -355,16 +358,24 @@ a { text-decoration: none; color: inherit; }
 
 /* download counter. */
 .hero__stats {
-    margin-top: 3rem;
+    margin-top: 1rem; /* reduced margin since buttons are gone */
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    font-size: 0.65rem;
-    font-weight: 700;
+    font-size: 0.9rem; /* larger */
+    font-weight: 800; /* extra bold */
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.1em;
+    color: #fff; /* brighter */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero__stats-text {
+    background: rgba(0,0,0,0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .hero__stats-line {
