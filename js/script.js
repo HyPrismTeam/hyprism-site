@@ -54,53 +54,6 @@ function initLenis() {
 }
 
 
-// ---- grid background hover effect ----
-// lights up 3d grid tiles near your cursor.
-function gridBackground() {
-    const grid = document.getElementById('grid-animation');
-    if (!grid) return;
-
-    // responsive grid size: smaller on mobile to save resources
-    const isMobile = window.innerWidth < 768;
-    // reduced grid resolution for better performance while maintaining look
-    const GRID_SIZE = isMobile ? 12 : 20;
-    grid.style.setProperty('--grid-size', GRID_SIZE);
-
-    const TILE_COUNT = GRID_SIZE * GRID_SIZE;
-    const tiles = [];
-
-    let resizeTimeout = null;
-
-    function buildGrid() {
-        grid.innerHTML = '';
-        tiles.length = 0;
-        for (let i = 0; i < TILE_COUNT; i++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            grid.appendChild(tile);
-            tiles.push(tile);
-        }
-    }
-
-    buildGrid();
-
-    // just for resizing logic if needed
-    function recalcGridMetrics() {
-       // logic for recalculating metrics if needed for static grid
-    }
-
-    window.addEventListener('resize', () => {
-         // debounce resize
-        if (resizeTimeout) clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            recalcGridMetrics();
-        }, 100);
-    }, { passive: true });
-
-    recalcGridMetrics();
-}
-
-
 // ---- 3d card tilt ----
 // cards tilt toward your mouse. fun to play with.
 // optimized: uses IntersectionObserver to only animate visible cards.
@@ -342,7 +295,6 @@ async function links() {
 document.addEventListener('DOMContentLoaded', () => {
     initLenis();
     burger();
-    gridBackground();
     cardTilt();
 
     // fetch data then setup count-up.
