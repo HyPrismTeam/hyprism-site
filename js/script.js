@@ -236,60 +236,85 @@ async function downloads() {
 
 
 // ---- download links ----
-// resolves latest release urls from github.
-// optimized: cache links to avoid flicker and network requests.
-async function links() {
-    const CACHE_KEY = 'hyprism_releases';
-    const CACHE_TIME = 3600000; // 1 hour
+document.addEventListener('DOMContentLoaded', () => {
+    const API_URL = 'https://api.github.com/repos/HyPrismTeam/HyPrism/releases/tags/v3.0.1';
 
-    const names = {
-        win: 'HyPrism.exe',
-        mac: 'HyPrism-macOS-arm64.dmg',
-        appimg: 'HyPrism-x86_64.AppImage',
-        flat: 'HyPrism.flatpak',
-        tar: 'HyPrism-linux-x86_64.tar.gz'
-    };
+    const btnWindows = document.getElementById('download-windows');
+    const btnMac = document.getElementById('download-macos');
+    const btnLinux = document.getElementById('download-linux');
+    const totalDownloadsDisplay = document.getElementById('total-downloads');
 
-    const base = `https://github.com/${OWNER}/${REPO}/releases/latest/download/`;
-    const urls = { win: base + names.win, mac: base + names.mac, linux: base + names.appimg };
+    async function fetchReleaseData() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Falha ao consultar API do GitHub');
+            
+            const data = await response.json();
+            const assets = data.assets;
 
-    try {
-        const now = Date.now();
-        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
-        let rel;
+            let totalCount = 0;
 
-        if (cached.data && (now - cached.time < CACHE_TIME)) {
-            rel = cached.data;
-        } else {
-            const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/releases?per_page=1`);
-            if (!r.ok) throw 0;
-            const data = await r.json();
-            rel = data[0];
-            localStorage.setItem(CACHE_KEY, JSON.stringify({ data: rel, time: now }));
+            assets.forEach(asset => {
+                const name = asset.name.toLowerCase();
+                const downloadUrl = asset.browser_download_url;
+                totalCount += asset.download_count;
+
+                if (name.endsWith('.exe')) {
+                    btnWindows.href = downloadUrl;
+                } else if (name.endsWith('.dmg')) {
+                    btnMac.href = downloadUrl;
+                } else if (name.endsWith('.appimage')) {
+                    btnLinux.href = downloadUrl;
+                }
+            });
+
+
+            if (totalDownloadsDisplay) {
+                animateCount(totalDownloadsDisplay, totalCount);
+            }
+
+        } catch (error) {
+            console.error('Erro ao buscar downloads:', error);
+
+            setFallbackLinks();
         }
-
-        if (!rel) throw 0;
-        const a = rel.assets;
-
-        const w = a.find(x => x.name === names.win);
-        const m = a.find(x => x.name === names.mac);
-        const l = a.find(x => x.name === names.appimg)
-               || a.find(x => x.name === names.flat)
-               || a.find(x => x.name === names.tar);
-
-        if (w) urls.win = w.browser_download_url;
-        if (m) urls.mac = m.browser_download_url;
-        if (l) urls.linux = l.browser_download_url;
-    } catch (e) {
-        console.warn('github api issue or cache miss, using fallbacks.');
     }
 
-    const set = (id, url) => { const el = document.getElementById(id); if (el) el.href = url; };
-    set('download-windows', urls.win);
-    set('download-macos', urls.mac);
-    set('download-linux', urls.linux);
-}
+    function animateCount(el, target) {
+        let current = 0;
+        const speed = 20; 
+        const increment = Math.ceil(target / 50);
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                el.innerText = target.toLocaleString();
+                clearInterval(timer);
+            } else {
+                el.innerText = current.toLocaleString();
+            }
+        }, speed);
+    }
 
+    function setFallbackLinks() {
+        const repoUrl = "https://github.com/HyPrismTeam/HyPrism/releases/tag/v3.0.1";
+        [btnWindows, btnMac, btnLinux].forEach(btn => {
+            if (btn.getAttribute('href') === '#') btn.href = repoUrl;
+        });
+    }
+
+    fetchReleaseData();
+});
+
+const menuToggle = document.getElementById('menu-toggle');
+const mobileNav = document.getElementById('mobile-nav');
+
+if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+        mobileNav.classList.toggle('active');
+        menuToggle.classList.toggle('active');
+    });
+}
 
 // ---- boot everything ----
 document.addEventListener('DOMContentLoaded', () => {
