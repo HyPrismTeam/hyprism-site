@@ -252,6 +252,37 @@ if (menuToggle) {
     });
 }
 
+async function fetchStats() {
+    try {
+        const response = await fetch('https://api.github.com/repos/HyPrismTeam/HyPrism/releases/latest');
+        const data = await response.json();
+        
+        if (!data || !data.assets) return;
+
+        data.assets.forEach(asset => {
+            const name = asset.name.toLowerCase();
+            const url = asset.browser_download_url;
+
+            if (name.includes('win') && name.endsWith('.exe')) {
+                const btn = document.getElementById('download-windows');
+                if (btn) btn.href = url;
+            }
+
+            if (name.includes('mac') && name.endsWith('.dmg')) {
+                const btn = document.getElementById('download-macos');
+                if (btn) btn.href = url;
+            }
+            if (name.includes('linux') && name.endsWith('.appimage')) {
+                const btn = document.getElementById('download-linux');
+                if (btn) btn.href = url;
+            }
+        });
+    } catch (error) {
+        console.error("Erro ao buscar links de download:", error);
+    }
+}
+fetchStats();
+
 // ---- boot everything ----
 document.addEventListener('DOMContentLoaded', () => {
     initLenis();
