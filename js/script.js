@@ -30,8 +30,11 @@ function initLenis() {
     if (typeof Lenis === 'undefined') return;
 
     const lenis = new Lenis({
-        lerp: 0.1,
-        smoothWheel: true
+        lerp: 0.08,
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        touchMultiplier: 2,
+        infinite: false,
     });
 
     function raf(time) {
