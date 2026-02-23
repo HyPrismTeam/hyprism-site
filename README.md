@@ -1,6 +1,6 @@
 # HyPrism Website
 
-[![Live](https://img.shields.io/badge/Live-hyprism.vercel.app-207e5c?style=for-the-badge)](https://hyprism.vercel.app)
+[![Live](https://img.shields.io/badge/Live-HyprismWeb!-207e5c?style=for-the-badge)](https://hyprismteam.github.io/hyprism-site/)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/yyyumeniku)
 
 <img src = "assets/screenshot/image.png" align = "center">
