@@ -72,7 +72,8 @@ function cardTilt() {
             } else {
                 entry.target.classList.remove('tilt-active');
                 // reset position if it goes off screen
-                entry.target.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)';
+                entry.target.style.transform =
+                    'perspective(800px) rotateX(0) rotateY(0) translateY(0)';
             }
         });
     }, { threshold: 0.1 });
@@ -96,7 +97,8 @@ function cardTilt() {
             const rotateX = ((y - cy) / cy) * -8;
             const rotateY = ((x - cx) / cx) * 8;
 
-            card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+            card.style.transform =
+                `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
             raf = 0;
         };
 
@@ -111,7 +113,8 @@ function cardTilt() {
         });
 
         card.addEventListener('pointerleave', () => {
-            card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)';
+            card.style.transform =
+                'perspective(800px) rotateX(0) rotateY(0) translateY(0)';
             if (raf) {
                 cancelAnimationFrame(raf);
                 raf = 0;
@@ -119,13 +122,14 @@ function cardTilt() {
         });
     });
 }
+
+
 // ---- count-up animation ----
 // numbers roll up from zero when visible.
 function countUp() {
     const el = document.getElementById('total-downloads');
     if (!el) return;
 
-    // ensures user sees the number even if animation glitches or 0.
     const run = () => {
         const target = parseInt(el.dataset.target || '0', 10);
         if (target <= 0) {
@@ -143,7 +147,7 @@ function countUp() {
                 run();
             }
         });
-    }, { threshold: 0.5 }); // changed threshold for better mobile detection
+    }, { threshold: 0.5 });
 
     observer.observe(el);
 }
@@ -155,7 +159,6 @@ function animateCount(el, target) {
     function tick(now) {
         const elapsed = now - start;
         const progress = Math.min(elapsed / duration, 1);
-        // ease out cubic.
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = Math.floor(eased * target);
         el.textContent = fmt(current);
@@ -171,6 +174,7 @@ function animateCount(el, target) {
     requestAnimationFrame(tick);
 }
 
+
 // ---- download links ----
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = 'https://api.github.com/repos/HyPrismTeam/HyPrism/releases';
@@ -183,44 +187,48 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchReleaseData() {
         try {
             const response = await fetch(API_URL);
-            if (!response.ok) throw new Error('Falha ao consultar API do GitHub');
-            
-            const data = await response.json();
-            const assets = data.assets;
+            if (!response.ok) throw new Error('Failed to fetch GitHub API');
+
+            const data = await response.json(); // data is an array of releases
 
             let totalCount = 0;
 
-            assets.forEach(asset => {
-                const name = asset.name.toLowerCase();
-                const downloadUrl = asset.browser_download_url;
-                totalCount += asset.download_count;
+            data.forEach(release => {
+                if (!release.assets) return;
 
-                if (name.endsWith('.exe')) {
-                    btnWindows.href = downloadUrl;
-                } else if (name.endsWith('.dmg')) {
-                    btnMac.href = downloadUrl;
-                } else if (name.endsWith('.appimage')) {
-                    btnLinux.href = downloadUrl;
-                }
+                release.assets.forEach(asset => {
+                    const name = asset.name.toLowerCase();
+                    const downloadUrl = asset.browser_download_url;
+
+                    totalCount += asset.download_count;
+
+                    if (name.endsWith('.exe')) {
+                        btnWindows.href = downloadUrl;
+                    } else if (name.endsWith('.dmg')) {
+                        btnMac.href = downloadUrl;
+                    } else if (name.endsWith('.appimage')) {
+                        btnLinux.href = downloadUrl;
+                    }
+                });
             });
-
 
             if (totalDownloadsDisplay) {
                 animateCount(totalDownloadsDisplay, totalCount);
             }
 
-        } catch (error) {
-            console.error('Erro ao buscar downloads:', error);
+            console.log('Download statistics loaded:', totalCount);
 
+        } catch (error) {
+            console.error('Failed to fetch downloads:', error);
             setFallbackLinks();
         }
     }
 
     function animateCount(el, target) {
         let current = 0;
-        const speed = 20; 
+        const speed = 20;
         const increment = Math.ceil(target / 50);
-        
+
         const timer = setInterval(() => {
             current += increment;
             if (current >= target) {
@@ -233,14 +241,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setFallbackLinks() {
-        const repoUrl = "https://github.com/HyPrismTeam/HyPrism/releases/tag/v3.0.1";
+        const repoUrl = "https://github.com/HyPrismTeam/HyPrism/releases";
         [btnWindows, btnMac, btnLinux].forEach(btn => {
-            if (btn.getAttribute('href') === '#') btn.href = repoUrl;
+            if (btn && btn.getAttribute('href') === '#') btn.href = repoUrl;
         });
     }
 
     fetchReleaseData();
 });
+
 
 const menuToggle = document.getElementById('menu-toggle');
 const mobileNav = document.getElementById('mobile-nav');
@@ -252,11 +261,14 @@ if (menuToggle) {
     });
 }
 
+
 async function fetchStats() {
     try {
-        const response = await fetch('https://api.github.com/repos/HyPrismTeam/HyPrism/releases/latest');
+        const response = await fetch(
+            'https://api.github.com/repos/HyPrismTeam/HyPrism/releases/latest'
+        );
         const data = await response.json();
-        
+
         if (!data || !data.assets) return;
 
         data.assets.forEach(asset => {
@@ -272,16 +284,18 @@ async function fetchStats() {
                 const btn = document.getElementById('download-macos');
                 if (btn) btn.href = url;
             }
+
             if (name.includes('linux') && name.endsWith('.appimage')) {
                 const btn = document.getElementById('download-linux');
                 if (btn) btn.href = url;
             }
         });
     } catch (error) {
-        console.error("Erro ao buscar links de download:", error);
+        console.error('Failed to fetch download links:', error);
     }
 }
 fetchStats();
+
 
 // ---- boot everything ----
 document.addEventListener('DOMContentLoaded', () => {
