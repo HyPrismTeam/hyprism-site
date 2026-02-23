@@ -173,7 +173,7 @@ function animateCount(el, target) {
 
 // ---- download links ----
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'https://api.github.com/repos/HyPrismTeam/HyPrism/releases/tags/v3.0.1';
+    const API_URL = 'https://api.github.com/repos/HyPrismTeam/HyPrism/releases';
 
     const btnWindows = document.getElementById('download-windows');
     const btnMac = document.getElementById('download-macos');
