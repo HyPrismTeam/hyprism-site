@@ -1,5 +1,5 @@
 title = "HyPrism"
-base_url = "https://hyprism.local"
+base_url = "https://hyprismteam.github.io/hyprism-site/"
 description = "HyPrism — open source launcher for Hytale."
 
 compile_sass = true
@@ -84,7 +84,7 @@ show_reading_time = true
 # Uses https://shareopenly.org.
 show_share_button = true
 # Whether to show the backlinks button for linked articles in the article's quick actions
-show_backlinks = false # I disabled because I am lazy to configure it :D
+show_backlinks = true
 # Whether to enable the KaTeX library for rendering LaTeX.
 # Note: This will make your page significantly heavier.
 # Instead, consider enabling it per page/section.
@@ -204,7 +204,3 @@ user = "duckquill"
 layout = false
 # Don't load any styles for debugging purposes
 no_styles = false
-
-# Just some random stupid thing that I wanna do?!
-highlight_code = true
-highlight_theme = "solarized-dark"
