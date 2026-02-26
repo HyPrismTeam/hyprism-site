@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://hyprism.local/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/development/addingmirror/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/development/addingmirror/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/development/codingstandards/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/development/codingstandards/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/development/contributing/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/development/contributing/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/development/frontendguide/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/development/frontendguide/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/general/features/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/general/features/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/general/introduction/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/general/introduction/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/technical/architecture/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/technical/architecture/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/technical/building/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/technical/building/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/technical/ipccodegen/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/technical/ipccodegen/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/technical/localization/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/technical/localization/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/technical/projectstructure/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/technical/projectstructure/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/technical/servicesreference/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/technical/servicesreference/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/user/configuration/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/user/configuration/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/user/installation/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/user/installation/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/docs/user/mirrors/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/docs/user/mirrors/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/downloads/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/downloads/</loc>
     </url>
     <url>
-        <loc>https://hyprism.local/tags/</loc>
+        <loc>https://hyprismteam.github.io/hyprism-site/tags/</loc>
     </url>
 </urlset>
